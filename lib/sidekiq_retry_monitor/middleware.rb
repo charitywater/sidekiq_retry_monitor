@@ -13,7 +13,7 @@ module SidekiqRetryMonitor
     private
 
     def should_raise_error?(retry_count)
-      retry_count == ENV['SIDEKIQ_RETRIES_BEFORE_RAISING_ERROR'].to_i
+      retry_count == ENV.fetch('SIDEKIQ_RETRIES_BEFORE_RAISING_ERROR', 18).to_i
     end
   end
 

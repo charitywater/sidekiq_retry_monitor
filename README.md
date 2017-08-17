@@ -1,6 +1,6 @@
 # Sidekiq::Retry::Monitor
 
-Middleware for Sidekiq that reports to Rollbar if a job as retried a certain
+Middleware for Sidekiq that reports to Rollbar if a job has retried a certain
 number of times.
 
 ## Usage

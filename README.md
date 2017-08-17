@@ -21,5 +21,7 @@ Sidekiq.configure_server do |config|
 end
 ```
 
-Configure a `SIDEKIQ_RETRIES_BEFORE_RAISING_ERROR` ENV which as the name
-suggests controls the number of retries that occur before a Rollbar is raised.
+(Optionally) Configure a `SIDEKIQ_RETRIES_BEFORE_RAISING_ERROR` ENV which as
+the name suggests controls the number of retries that occur before a Rollbar is
+raised. If you do not set this ENV it defaults to 18 which works out to be
+about five days of retrying.

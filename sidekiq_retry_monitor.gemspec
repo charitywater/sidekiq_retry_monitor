@@ -5,7 +5,7 @@ require 'sidekiq_retry_monitor/version'
 
 Gem::Specification.new do |spec|
   spec.name = 'sidekiq_retry_monitor'
-  spec.summary = 'Middleware for Sidekiq that reports to Rollbar if a job has retried a certain number of times'
+  spec.summary = 'Middleware for Sidekiq that reports to Sentry if a job has retried a certain number of times'
   spec.homepage = 'https://github.com/charitywater/sidekiq_retry_monitor'
   spec.version = SidekiqRetryMonitor::VERSION
   spec.licenses = 'MIT'
@@ -28,5 +28,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
 
-  spec.add_dependency 'rollbar'
+  spec.add_dependency 'sentry-ruby'
 end

@@ -6,8 +6,8 @@ describe SidekiqRetryMonitor::Middleware do
     let(:queue) { 'fake' }
     let(:job_params) do
       {
-        'queue' => 'rollbar',
-        'class' => 'Rollbar::Delay::Sidekiq',
+        'queue' => 'Sentry',
+        'class' => 'Sentry::Delay::Sidekiq',
         'jid' => 'be6345a52894f761459d0143',
         'args' => [
           'job_class' => 'ActionMailer::DeliveryJob',
@@ -20,12 +20,14 @@ describe SidekiqRetryMonitor::Middleware do
     shared_examples_for 'a job where the retry count matches the number of retries necessary to raise an error' do |retry_count|
       let(:job_params_with_number_of_retries_before_raising_error) { job_params.merge({ 'retry_count' => retry_count }) }
 
-      it 'reports an exception to Rollbar' do
-        expect(Rollbar).to receive(:error).with(
+      it 'reports an exception to Sentry' do
+        expect(Sentry).to receive(:capture_exception).with(
           an_instance_of(SidekiqRetryMonitor::SidekiqJobRetriedLotsOfTimes),
-          job_id: job_params['jid'],
-          job_class: job_params['class'],
-          job_args: job_params['args']
+          extra: {
+            job_id: job_params['jid'],
+            job_class: job_params['class'],
+            job_args: job_params['args']
+          }
         )
 
         subject.call(worker, job_params_with_number_of_retries_before_raising_error, queue) { nil }
@@ -34,8 +36,8 @@ describe SidekiqRetryMonitor::Middleware do
 
     context 'when SIDEKIQ_RETRIES_BEFORE_RAISING_ERROR is not set' do
       context 'when the job has not retried' do
-        it 'does not report an exception to Rollbar' do
-          expect(Rollbar).not_to receive(:error)
+        it 'does not report an exception to Sentry' do
+          expect(Sentry).not_to receive(:capture_exception)
           subject.call(worker, job_params, queue) { nil }
         end
       end
@@ -43,8 +45,8 @@ describe SidekiqRetryMonitor::Middleware do
       context 'when the job has a retry count that does not match the number of retries necessary to raise an error' do
         let(:job_params_with_some_retries) { job_params.merge({ 'retry_count' => 2 }) }
 
-        it 'does not report an exception to Rollbar' do
-          expect(Rollbar).not_to receive(:error)
+        it 'does not report an exception to Sentry' do
+          expect(Sentry).not_to receive(:capture_exception)
           subject.call(worker, job_params_with_some_retries, queue) { nil }
         end
       end
